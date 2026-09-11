@@ -1,0 +1,333 @@
+{
+  "source": "PRQLite@9360f2e",
+  "cases": [
+    {
+      "sql": "CREATE TABLE users (id INT, name TEXT, active BOOL);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO users VALUES (1, 'alice', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO users VALUES (2, 'bob', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO users VALUES (3, 'carol', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO users VALUES (4, 'dave', false);",
+      "output": ""
+    },
+    {
+      "sql": "SELECT * FROM users;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n3              carol          true           \n4              dave           false          \n(4 rows)\n"
+    },
+    {
+      "sql": "SELECT name, id FROM users;",
+      "output": "name           id             \n-------------------------------------------------\nalice          1              \nbob            2              \ncarol          3              \ndave           4              \n(4 rows)\n"
+    },
+    {
+      "sql": "SELECT active, name FROM users WHERE id = 3;",
+      "output": "active         name           \n-------------------------------------------------\ntrue           carol          \n(1 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id = 1 OR id = 3;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n3              carol          true           \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id > 1 AND active = true;",
+      "output": "id             name           active         \n-------------------------------------------------\n3              carol          true           \n(1 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id = 1 AND active = true OR name = 'dave';",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n4              dave           false          \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE (id = 1 OR id = 2) AND active = false;",
+      "output": "id             name           active         \n-------------------------------------------------\n2              bob            false          \n(1 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id <> 2;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n3              carol          true           \n4              dave           false          \n(3 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id != 2;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n3              carol          true           \n4              dave           false          \n(3 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id >= 3;",
+      "output": "id             name           active         \n-------------------------------------------------\n3              carol          true           \n4              dave           false          \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id <= 2;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id < 2;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n(1 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE name > 'b';",
+      "output": "id             name           active         \n-------------------------------------------------\n2              bob            false          \n3              carol          true           \n4              dave           false          \n(3 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE name <= 'bob';",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE active = false;",
+      "output": "id             name           active         \n-------------------------------------------------\n2              bob            false          \n4              dave           false          \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE active != true;",
+      "output": "id             name           active         \n-------------------------------------------------\n2              bob            false          \n4              dave           false          \n(2 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE 1 = 1;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n3              carol          true           \n4              dave           false          \n(4 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id;",
+      "output": "id             name           active         \n-------------------------------------------------\n(0 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id = 99;",
+      "output": "id             name           active         \n-------------------------------------------------\n(0 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id = 99999999999;",
+      "output": "id             name           active         \n-------------------------------------------------\nError: stoi: out of range\n"
+    },
+    {
+      "sql": "INSERT INTO users VALUES (99999999999, 'big', true);",
+      "output": "Error: stoi: out of range\n"
+    },
+    {
+      "sql": "SELECT * FROM users ORDER BY id DESC LIMIT 1;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n3              carol          true           \n4              dave           false          \n(4 rows)\n"
+    },
+    {
+      "sql": "SELECT * FROM users garbage;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n3              carol          true           \n4              dave           false          \n(4 rows)\n"
+    },
+    {
+      "sql": "Select * from users;",
+      "output": "Error: SYNTAX ERROR: Statement must be CRE/SEL/INS/DEL/BEGIN/COMMIT/ROLLBACK\n"
+    },
+    {
+      "sql": "UPDATE users;",
+      "output": "Error: SYNTAX ERROR: Statement must be CRE/SEL/INS/DEL/BEGIN/COMMIT/ROLLBACK\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id = 1 AND;",
+      "output": "Error: At End of token stream\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE (id = 1;",
+      "output": "Error: SYNTAX ERROR: expected ')'\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE name = 'bob;",
+      "output": "Runtime error in creating LEXER: LEXER_ERROR: unterminated string literal\nError: LEXER_ERROR: unterminated string literal\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id @ 1;",
+      "output": "Runtime error in creating LEXER: LEXER_ERROR: unexpected character '@' at position 29\nError: LEXER_ERROR: unexpected character '@' at position 29\n"
+    },
+    {
+      "sql": "SELECT email FROM users;",
+      "output": "Error: SEMANTIC ERROR: column 'email' does not exist in table 'users'\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id = 'x';",
+      "output": "Error: SEMANTIC ERROR: type mismatch in expression — left and right of '=' must be same type\n"
+    },
+    {
+      "sql": "SELECT * FROM users WHERE id AND active;",
+      "output": "Error: SEMANTIC ERROR: AND/OR requires boolean operands\n"
+    },
+    {
+      "sql": "SELECT * FROM ghosts;",
+      "output": "Error: SEMANTIC ERROR: This Table Doesn't Exist.\n"
+    },
+    {
+      "sql": "INSERT INTO users VALUES (5, 'eve');",
+      "output": "Error: SEMANTIC ERROR: shape of table doesn't match query\n"
+    },
+    {
+      "sql": "INSERT INTO users VALUES ('x', 'eve', true);",
+      "output": "Error: SEMANTIC ERROR:0th item's type doesn't match\n"
+    },
+    {
+      "sql": "CREATE TABLE users (x INT);",
+      "output": "Error: SEMANTIC ERROR: two tables with same name attempted to be created.\n"
+    },
+    {
+      "sql": "CREATE TABLE t (a INT, a TEXT);",
+      "output": "Error: SEMANTIC ERROR: duplicate column name 'a' in table 't'\n"
+    },
+    {
+      "sql": "CREATE INDEX idx ON users (id);",
+      "output": ""
+    },
+    {
+      "sql": "CREATE INDEX idx ON users (zz);",
+      "output": "Error: SEMANTIC ERROR: column zz doesn't exist in table users\n"
+    },
+    {
+      "sql": "DELETE FROM users WHERE id;",
+      "output": "Error: SEMANTIC ERROR: WHERE clause must evaluate to a boolean condition\n"
+    },
+    {
+      "sql": "BEGIN;",
+      "output": "BEGIN\n"
+    },
+    {
+      "sql": "DELETE FROM users WHERE id = 2 OR id = 4;",
+      "output": "(2 rows) Affected\n"
+    },
+    {
+      "sql": "SELECT * FROM users;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n3              carol          true           \n(2 rows)\n"
+    },
+    {
+      "sql": "INSERT INTO users VALUES (9, 'zed', true);",
+      "output": ""
+    },
+    {
+      "sql": "SELECT * FROM users;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n3              carol          true           \n9              zed            true           \n(3 rows)\n"
+    },
+    {
+      "sql": "ROLLBACK;",
+      "output": "ROLLBACK\n"
+    },
+    {
+      "sql": "SELECT * FROM users;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n3              carol          true           \n4              dave           false          \n(4 rows)\n"
+    },
+    {
+      "sql": "BEGIN;",
+      "output": "BEGIN\n"
+    },
+    {
+      "sql": "BEGIN;",
+      "output": "Error: TRANSACTION ERROR: BEGIN called while a transaction is already active.\n"
+    },
+    {
+      "sql": "COMMIT;",
+      "output": "COMMIT\n"
+    },
+    {
+      "sql": "COMMIT;",
+      "output": "Error: TRANSACTION ERROR: COMMIT called without an active transaction.\n"
+    },
+    {
+      "sql": "ROLLBACK;",
+      "output": "Error: TRANSACTION ERROR: ROLLBACK called without an active transaction.\n"
+    },
+    {
+      "sql": "DELETE FROM users WHERE id = 4 AND active = false;",
+      "output": "(1 rows) Affected\n"
+    },
+    {
+      "sql": "SELECT * FROM users;",
+      "output": "id             name           active         \n-------------------------------------------------\n1              alice          true           \n2              bob            false          \n3              carol          true           \n(3 rows)\n"
+    },
+    {
+      "sql": "CREATE TABLE big (n INT, label TEXT, flag BOOL);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (1, 'row1', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (2, 'row2', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (3, 'row3', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (4, 'row4', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (5, 'row5', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (6, 'row6', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (7, 'row7', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (8, 'row8', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (9, 'row9', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (10, 'row10', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (11, 'row11', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (12, 'row12', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (13, 'row13', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (14, 'row14', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (15, 'row15', true);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (16, 'row16', false);",
+      "output": ""
+    },
+    {
+      "sql": "INSERT INTO big VALUES (17, 'row17', true);",
+      "output": ""
+    },
+    {
+      "sql": "SELECT n FROM big WHERE n > 13;",
+      "output": "n              \n-------------------------------------------------\n14             \n15             \n16             \n17             \n(4 rows)\n"
+    },
+    {
+      "sql": "DELETE FROM big WHERE n < 10;",
+      "output": "(9 rows) Affected\n"
+    },
+    {
+      "sql": "SELECT * FROM big;",
+      "output": "n              label          flag           \n-------------------------------------------------\n10             row10          false          \n11             row11          true           \n12             row12          false          \n13             row13          true           \n14             row14          false          \n15             row15          true           \n16             row16          false          \n17             row17          true           \n(8 rows)\n"
+    },
+    {
+      "sql": "INSERT INTO big VALUES (18, 'row18', true);",
+      "output": ""
+    },
+    {
+      "sql": "SELECT n, label FROM big WHERE n >= 16;",
+      "output": "n              label          \n-------------------------------------------------\n16             row16          \n17             row17          \n18             row18          \n(3 rows)\n"
+    }
+  ]
+}
