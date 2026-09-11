@@ -38,7 +38,7 @@ export const site = {
   email: "deepanshu280607@gmail.com",
   links: {
     github: "https://github.com/DeepanshuPayal123",
-    linkedin: "https://www.linkedin.com/in/TODO",
+    linkedin: "https://www.linkedin.com/in/deepanshu-payal-0054a028a/",
     resume: "/resume.pdf",
   },
 
