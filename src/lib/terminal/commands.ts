@@ -47,16 +47,13 @@ const OPEN_TARGETS: Record<string, string> = {
 function catProject(id: string): CommandResult | null {
   const project = site.projects.find((p) => p.id === id);
   if (!project) return null;
-  const result = print(
+  return print(
     `# ${project.name} — ${project.kind} (${project.period})`,
     project.summary,
     ...project.points.map((point) => `  - ${point}`),
     `stack:  ${project.stack.join(", ")}`,
     `source: ${project.source}`,
   );
-  if (project.credit)
-    result.lines.push({ text: `note:   ${project.credit.text}`, tone: "dim" });
-  return result;
 }
 
 function cat(file: string | undefined): CommandResult {

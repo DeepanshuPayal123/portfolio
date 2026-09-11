@@ -35,12 +35,13 @@ describe("terminal commands", () => {
     expect(text("ls projects")).toBe("prqlite  lockstep  erp");
   });
 
-  test("cat prints files, and LOCKSTEP keeps its tf-raft credit", () => {
+  test("cat prints files; the LOCKSTEP file has no credit note", () => {
     expect(text("cat about.txt")).toContain(site.intro);
     expect(text("cat projects/prqlite")).toContain(
       "https://github.com/DeepanshuPayal123/PRQLite",
     );
-    expect(text("cat projects/lockstep")).toContain("tf-raft");
+    expect(text("cat projects/lockstep")).toContain("# LOCKSTEP");
+    expect(text("cat projects/lockstep")).not.toContain("note:");
   });
 
   test("cat on a missing file fails like a shell", () => {

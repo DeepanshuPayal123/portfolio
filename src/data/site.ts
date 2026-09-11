@@ -26,7 +26,6 @@ export interface Project {
   points: string[];
   stack: string[];
   source: string;
-  credit?: { label: string; href: string; text: string };
 }
 
 export const site = {
@@ -128,11 +127,6 @@ export const site = {
       ],
       stack: ["TypeScript", "gRPC", "Protocol Buffers", "Jest"],
       source: "https://github.com/DeepanshuPayal123/LOCKSTEP",
-      credit: {
-        label: "tf-raft",
-        href: "https://github.com/iifawzi/tf-raft",
-        text: "Study implementation built on tf-raft by Fawzi Abdulfattah (MIT).",
-      },
     },
     {
       id: "erp",

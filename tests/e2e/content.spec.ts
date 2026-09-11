@@ -59,7 +59,7 @@ test.describe("resume content", () => {
     }
   });
 
-  test("projects link to source, and LOCKSTEP credits tf-raft", async ({
+  test("projects link to source, and the LOCKSTEP card has no credit line", async ({
     page,
   }) => {
     await page.goto("/");
@@ -71,10 +71,8 @@ test.describe("resume content", () => {
     ).toHaveAttribute("href", "https://github.com/DeepanshuPayal123/PRQLite");
 
     const lockstep = card("LOCKSTEP");
-    await expect(lockstep).toContainText("tf-raft");
-    await expect(
-      lockstep.getByRole("link", { name: /tf-raft/ }),
-    ).toHaveAttribute("href", "https://github.com/iifawzi/tf-raft");
+    await expect(lockstep).toContainText("used to study consensus hands-on");
+    await expect(lockstep).not.toContainText("Study implementation built on");
 
     await expect(card("Order Management")).toContainText("1000+");
   });

@@ -8,8 +8,6 @@ interface Props {
 }
 
 const { project, class: className = '' } = Astro.props;
-const credit = project.credit;
-const [creditBefore, creditAfter] = credit ? credit.text.split(credit.label) : [];
 ---
 
 <article id={project.id} data-reveal class:list={['frame flex flex-col p-6 sm:p-8', className]}>
@@ -30,18 +28,6 @@ const [creditBefore, creditAfter] = credit ? credit.text.split(credit.label) : [
       ))
     }
   </ul>
-
-  {
-    credit && (
-      <p class="mt-5 border-l-2 border-amber pl-3 text-sm text-dim">
-        {creditBefore}
-        <a href={credit.href} class="text-amber underline underline-offset-4 hover:no-underline">
-          {credit.label}
-        </a>
-        {creditAfter}
-      </p>
-    )
-  }
 
   <slot />
 
