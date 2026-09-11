@@ -1,0 +1,140 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import portrait from '@/assets/portrait.png';
+
+// The cutout's own alpha shapes the rim light and the sweep, so both hug the silhouette.
+const mask = await getImage({ src: portrait, format: 'webp', width: 400 });
+---
+
+<figure data-portrait class="portrait" style={`--portrait-mask: url(${mask.src})`}>
+  <div class="portrait-glow" aria-hidden="true"></div>
+  <Picture
+    src={portrait}
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    widths={[400, 600, 766]}
+    sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 80vw"
+    alt="Portrait of Deepanshu"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="portrait-rim" aria-hidden="true"></div>
+  <div class="portrait-sweep" data-sweep aria-hidden="true"></div>
+</figure>
+
+<style>
+  .portrait {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 26rem);
+    margin-inline: auto;
+  }
+  .portrait :global(picture),
+  .portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* The photo paints in the first frame (it is the LCP element); every effect is an overlay. */
+  .portrait :global(img) {
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 32px color-mix(in oklab, var(--accent) 28%, transparent));
+    -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
+    mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
+  }
+
+  .portrait-glow {
+    position: absolute;
+    inset: 6% -8% 22%;
+    z-index: 0;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--accent) 42%, transparent), transparent 72%);
+    filter: blur(28px);
+    opacity: 0.75;
+  }
+
+  .portrait-rim,
+  .portrait-sweep {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    -webkit-mask-image: var(--portrait-mask), linear-gradient(to bottom, #000 66%, transparent 98%);
+    mask-image: var(--portrait-mask), linear-gradient(to bottom, #000 66%, transparent 98%);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /* Light from the planet below-left, and a cool edge from the sky above-right. */
+  .portrait-rim {
+    background:
+      linear-gradient(20deg, color-mix(in oklab, var(--accent) 60%, transparent) 0%, transparent 38%),
+      linear-gradient(205deg, color-mix(in oklab, var(--highlight) 45%, transparent) 0%, transparent 26%);
+    mix-blend-mode: screen;
+    opacity: 0.55;
+  }
+  :global(:root[data-theme='light']) .portrait-rim {
+    background: linear-gradient(20deg, rgb(255 168 102 / 0.6) 0%, transparent 40%);
+    mix-blend-mode: soft-light;
+    opacity: 0.7;
+  }
+
+  .portrait-sweep {
+    background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.45) 50%, transparent 65%);
+    background-size: 300% 100%;
+    mix-blend-mode: overlay;
+    opacity: 0;
+    animation: portrait-sweep 1.8s var(--ease-out) 0.4s 1 both;
+  }
+  @keyframes portrait-sweep {
+    0% {
+      background-position: 100% 0;
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    100% {
+      background-position: 0% 0;
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portrait-sweep {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // A few pixels of parallax against the pointer, eased; off for touch and reduced motion.
+  const figure = document.querySelector<HTMLElement>('[data-portrait]');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (figure && !reduced && window.matchMedia('(pointer: fine)').matches) {
+    let target = { x: 0, y: 0 };
+    const current = { x: 0, y: 0 };
+    let frame = 0;
+
+    const step = () => {
+      current.x += (target.x - current.x) * 0.08;
+      current.y += (target.y - current.y) * 0.08;
+      figure.style.transform = `translate3d(${current.x.toFixed(2)}px, ${current.y.toFixed(2)}px, 0)`;
+      const settled = Math.abs(target.x - current.x) + Math.abs(target.y - current.y) < 0.05;
+      frame = settled ? 0 : requestAnimationFrame(step);
+    };
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        target = { x: (e.clientX / window.innerWidth - 0.5) * -12, y: (e.clientY / window.innerHeight - 0.5) * -8 };
+        if (!frame) frame = requestAnimationFrame(step);
+      },
+      { passive: true },
+    );
+  }
+</script>

@@ -13,7 +13,7 @@ const NODES: Record<string, string> = {
 test.describe("blueprint diagram", () => {
   test("every node links to its section", async ({ page }) => {
     await page.goto("/");
-    const diagram = page.locator("#top [data-diagram]:visible");
+    const diagram = page.locator("#system [data-diagram]:visible");
     await expect(diagram.locator("[data-node]")).toHaveCount(
       Object.keys(NODES).length,
     );
@@ -28,7 +28,7 @@ test.describe("blueprint diagram", () => {
   test("clicking a node scrolls to that section", async ({ page }) => {
     await page.goto("/");
     await page
-      .locator("#top [data-diagram]:visible")
+      .locator("#system [data-diagram]:visible")
       .getByRole("link", { name: "PRQLite" })
       .click();
     await expect(page.locator("#prqlite")).toBeInViewport();
@@ -37,7 +37,7 @@ test.describe("blueprint diagram", () => {
   test("packets travel along the edges", async ({ page }) => {
     await page.goto("/");
     const packet = page
-      .locator("#top [data-diagram]:visible [data-packet]")
+      .locator("#system [data-diagram]:visible [data-packet]")
       .first();
     await expect(packet).toBeVisible();
     const before = await packet.boundingBox();
@@ -54,7 +54,7 @@ test.describe("with reduced motion", () => {
     page,
   }) => {
     await page.goto("/");
-    const diagram = page.locator("#top [data-diagram]:visible");
+    const diagram = page.locator("#system [data-diagram]:visible");
     await expect(diagram).toHaveAttribute("data-motion", "static");
     await expect(diagram.locator("[data-packet]").first()).toBeHidden();
     const offsets = await diagram

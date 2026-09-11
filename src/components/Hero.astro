@@ -1,36 +1,121 @@
 ---
-import BlueprintDiagram from '@/components/BlueprintDiagram.astro';
 import Icon from '@/components/Icon.astro';
+import Portrait from '@/components/Portrait.astro';
 import { site } from '@/data/site';
+
+const socials = [
+  { href: site.links.github, label: 'GitHub', icon: 'github' },
+  { href: site.links.linkedin, label: 'LinkedIn', icon: 'linkedin' },
+  { href: `mailto:${site.email}`, label: 'Email', icon: 'mail' },
+] as const;
 ---
 
 <section
   id="top"
-  class="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-10 pb-16 sm:px-6 sm:pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:pb-24"
+  class="relative mx-auto grid min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-12 px-4 pt-10 pb-28 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:pb-36"
 >
-  <div>
-    <p class="mono-label">DWG-001 · Portfolio · Rev 2026.09</p>
+  <div class="relative z-10">
+    <p class="pill-label"><span aria-hidden="true">👋</span> Hello, I'm</p>
 
-    <h1
-      class="mt-4 text-[clamp(3.25rem,13vw,7rem)] leading-[0.9] font-semibold tracking-tight lg:text-[5.5rem] xl:text-[6.25rem]"
-    >
-      {site.name}
+    <h1 class="mt-5 text-[clamp(3.25rem,11vw,7rem)] leading-[0.92] font-semibold tracking-[-0.035em]">
+      Deep<span class="text-gradient">anshu</span>
     </h1>
-    <p class="dimension mt-4 max-w-md" aria-hidden="true">B.Tech CSE · CGPA {site.education.cgpa.split(' ')[0]}</p>
 
-    <p class="mt-6 text-lg sm:text-xl">
-      <span class="text-accent">{site.role}</span>
-      <span class="text-dim"> · {site.headline}</span>
+    <p class="mt-5 text-xl font-medium sm:text-2xl">
+      {site.role}
+      <span class="font-normal text-dim"> · distributed systems & databases</span>
     </p>
-    <p class="mt-4 max-w-2xl leading-relaxed text-dim">{site.intro}</p>
+    <p class="mt-4 max-w-xl text-base leading-relaxed text-dim sm:text-lg">{site.intro}</p>
 
-    <div class="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:flex sm:flex-wrap">
-      <a href={site.links.resume} class="btn btn-primary"><Icon name="download" />Resume</a>
-      <a href={site.links.github} class="btn" rel="me"><Icon name="github" />GitHub</a>
-      <a href={site.links.linkedin} class="btn" rel="me"><Icon name="linkedin" />LinkedIn</a>
-      <a href={`mailto:${site.email}`} class="btn"><Icon name="mail" />Email</a>
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <a href="#projects" class="btn btn-primary">View my work <Icon name="arrow" class="size-4" /></a>
+      <a href={site.links.resume} class="btn"><Icon name="download" />Resume</a>
     </div>
+
+    <ul class="mt-6 flex items-center gap-3" aria-label="Elsewhere">
+      {
+        socials.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              aria-label={s.label}
+              rel={s.icon === 'mail' ? undefined : 'me'}
+              class="grid size-11 place-items-center rounded-full border border-line bg-panel/60 text-dim transition-colors hover:border-accent hover:text-accent"
+            >
+              <Icon name={s.icon} class="size-[1.15rem]" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 
-  <BlueprintDiagram />
+  <div class="relative">
+    <Portrait />
+    <svg
+      data-annotation
+      aria-hidden="true"
+      viewBox="0 0 210 160"
+      class="annotation pointer-events-none absolute -top-4 left-0 hidden w-44 md:block lg:-left-10 lg:w-52"
+    >
+      <g class="words">
+        <text x="96" y="30">Build</text>
+        <text x="104" y="64">Learn</text>
+        <text x="112" y="98">Improve</text>
+        <text x="120" y="132">Repeat</text>
+      </g>
+      <path class="loop" d="M110 124 C 44 122, 40 44, 84 22"></path>
+      <path class="loop head" d="M72 18 L 85 22 L 76 32"></path>
+    </svg>
+  </div>
 </section>
+
+<style>
+  .annotation .words text {
+    font-family: var(--font-hand);
+    font-size: 27px;
+    font-weight: 600;
+    fill: var(--ink);
+    opacity: 0.88;
+    transform-box: fill-box;
+    transform: rotate(-8deg);
+  }
+  .annotation .loop {
+    fill: none;
+    stroke: var(--ink-dim);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .annotation .words text {
+      animation: word-in 600ms var(--ease-out) both;
+    }
+    .annotation .words text:nth-child(2) {
+      animation-delay: 150ms;
+    }
+    .annotation .words text:nth-child(3) {
+      animation-delay: 300ms;
+    }
+    .annotation .words text:nth-child(4) {
+      animation-delay: 450ms;
+    }
+    .annotation .loop {
+      animation: draw 1.1s var(--ease-out) 0.8s both;
+    }
+  }
+
+  @keyframes word-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 200;
+    }
+  }
+</style>
