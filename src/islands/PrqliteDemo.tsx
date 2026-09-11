@@ -223,6 +223,8 @@ export default function PrqliteDemo() {
           <pre
             ref={consoleRef}
             data-testid="repl-output"
+            tabIndex={0}
+            aria-label="REPL output"
             aria-live="polite"
             className="h-56 overflow-auto border border-line bg-paper/60 p-3 font-mono text-xs leading-relaxed text-ink"
           >
@@ -479,7 +481,11 @@ function StagePanel({
             transaction state.
           </p>
         ) : (
-          <ol className="max-h-64 space-y-0.5 overflow-y-auto font-mono text-xs">
+          <ol
+            tabIndex={0}
+            aria-label="Executor trace"
+            className="max-h-64 space-y-0.5 overflow-y-auto font-mono text-xs"
+          >
             {lines.map((line, i) => (
               <li key={i} className="flex gap-3">
                 <span className="w-20 shrink-0 text-dim">{line.operator}</span>

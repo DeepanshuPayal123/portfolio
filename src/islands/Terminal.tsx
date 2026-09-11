@@ -190,6 +190,7 @@ export default function Terminal() {
                 <div
                   ref={logRef}
                   role="log"
+                  tabIndex={0}
                   aria-live="polite"
                   className="flex-1 space-y-1 overflow-y-auto px-4 py-3"
                   onClick={() => inputRef.current?.focus()}

@@ -9,7 +9,9 @@
     "test": "vitest run",
     "test:e2e": "npm run build && playwright test",
     "test:release": "RELEASE=1 vitest run tests/unit/release.test.ts",
-    "golden": "node scripts/make-golden.mjs ../PRQLite"
+    "golden": "node scripts/make-golden.mjs ../PRQLite",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "og": "node scripts/make-og.mjs"
   },
   "type": "module",
   "engines": {
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@axe-core/playwright": "^4.13.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

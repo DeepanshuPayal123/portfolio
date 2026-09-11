@@ -1,5 +1,6 @@
 ---
 import '@/styles/global.css';
+import { site } from '@/data/site';
 
 interface Props {
   title: string;
@@ -8,6 +9,19 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site).href;
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.role,
+  email: `mailto:${site.email}`,
+  url: new URL('/', Astro.site).href,
+  image: ogImage,
+  alumniOf: { '@type': 'CollegeOrUniversity', name: site.education.school },
+  knowsAbout: ['Distributed systems', 'Database internals', 'Backend engineering'],
+  sameAs: [site.links.github, site.links.linkedin],
+};
 ---
 
 <html lang="en" data-theme="dark">
@@ -24,6 +38,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name}, ${site.role} — ${site.headline}`} />
+    <meta name="twitter:image" content={ogImage} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)}></script>
     <script is:inline>
       // Runs before first paint. Mirrors resolveInitialTheme() and THEME_COLORS in src/lib/theme.ts.
       (() => {
