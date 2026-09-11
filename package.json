@@ -11,7 +11,8 @@
     "test:release": "RELEASE=1 vitest run tests/unit/release.test.ts",
     "golden": "node scripts/make-golden.mjs ../PRQLite",
     "lighthouse": "node scripts/lighthouse.mjs",
-    "og": "node scripts/make-og.mjs"
+    "og": "node scripts/make-og.mjs",
+    "deploy": "npm run build && npm run test:release && wrangler deploy"
   },
   "type": "module",
   "engines": {

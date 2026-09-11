@@ -5,7 +5,8 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: process.env.SITE_URL ?? 'http://localhost:4321',
+  // Production origin; override with SITE_URL once a custom domain is attached.
+  site: process.env.SITE_URL ?? 'https://deepanshu-portfolio.deepanshu-portfolio.workers.dev',
   integrations: [react(), sitemap()],
   redirects: { '/resume': '/resume.pdf' },
   vite: { plugins: [tailwindcss()] },
