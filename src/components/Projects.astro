@@ -2,6 +2,7 @@
 import ProjectCard from '@/components/ProjectCard.astro';
 import SectionHeader from '@/components/SectionHeader.astro';
 import { site } from '@/data/site';
+import PrqliteDemo from '@/islands/PrqliteDemo';
 
 const [prqlite, ...others] = site.projects;
 ---
@@ -10,7 +11,15 @@ const [prqlite, ...others] = site.projects;
   <SectionHeader sheet="03" title="Projects" note="Systems · full stack" />
 
   <div class="mt-10 grid gap-6 md:grid-cols-2">
-    {prqlite && <ProjectCard project={prqlite} class="md:col-span-2" />}
+    {
+      prqlite && (
+        <ProjectCard project={prqlite} class="md:col-span-2">
+          <div id="prqlite-demo" class="mt-8 border-t border-line pt-6">
+            <PrqliteDemo client:visible />
+          </div>
+        </ProjectCard>
+      )
+    }
     {others.map((project) => <ProjectCard project={project} />)}
   </div>
 </section>
