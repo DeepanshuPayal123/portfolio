@@ -28,23 +28,23 @@ const wide: Layout = {
   name: 'wide',
   viewBox: '0 0 600 450',
   class: 'hidden w-full sm:block',
-  size: { w: 130, h: 60 },
+  size: { w: 140, h: 60 },
   nodes: [
     { label: 'IIT Jodhpur', sub: "CSE '27 · 9.17", aria: 'education', href: '#education', x: 10, y: 190 },
-    { label: 'PRQLite', sub: 'C++17 DB engine', aria: 'database engine project', href: '#prqlite', x: 235, y: 40 },
-    { label: 'Decklar', sub: 'Wi-Fi PoD · 2025', aria: 'internship', href: '#job-decklar', x: 235, y: 190 },
-    { label: 'LOCKSTEP', sub: 'Raft KV store', aria: 'Raft project', href: '#lockstep', x: 235, y: 340 },
-    { label: 'InduBindu ERP', sub: '1000+ orders/day', aria: 'ERP project', href: '#erp', x: 460, y: 40 },
-    { label: '123OfAI', sub: 'contests · 2026', aria: 'internship', href: '#job-123ofai', x: 460, y: 190 },
-    { label: 'Your team', sub: 'next deploy', aria: 'get in touch', href: '#contact', x: 460, y: 340, dashed: true },
+    { label: 'PRQLite', sub: 'C++17 DB engine', aria: 'database engine project', href: '#prqlite', x: 230, y: 40 },
+    { label: 'Decklar', sub: 'Wi-Fi PoD · 2025', aria: 'internship', href: '#job-decklar', x: 230, y: 190 },
+    { label: 'LOCKSTEP', sub: 'Raft KV store', aria: 'Raft project', href: '#lockstep', x: 230, y: 340 },
+    { label: 'InduBindu ERP', sub: '1000+ orders/day', aria: 'ERP project', href: '#erp', x: 455, y: 40 },
+    { label: '123OfAI', sub: 'contests · 2026', aria: 'internship', href: '#job-123ofai', x: 455, y: 190 },
+    { label: 'Your team', sub: 'next deploy', aria: 'get in touch', href: '#contact', x: 455, y: 340, dashed: true },
   ],
   edges: [
-    { id: 'iit-prqlite', d: 'M140 220 H187 V70 H235', arrow: true },
-    { id: 'iit-decklar', d: 'M140 220 H235', arrow: true },
-    { id: 'iit-lockstep', d: 'M140 220 H187 V370 H235', arrow: true },
-    { id: 'prqlite-erp', d: 'M365 70 H460', arrow: true },
-    { id: 'decklar-123', d: 'M365 220 H460', arrow: true },
-    { id: 'lockstep-team', d: 'M365 370 H460', arrow: true },
+    { id: 'iit-prqlite', d: 'M150 220 H190 V70 H230', arrow: true },
+    { id: 'iit-decklar', d: 'M150 220 H230', arrow: true },
+    { id: 'iit-lockstep', d: 'M150 220 H190 V370 H230', arrow: true },
+    { id: 'prqlite-erp', d: 'M370 70 H455', arrow: true },
+    { id: 'decklar-123', d: 'M370 220 H455', arrow: true },
+    { id: 'lockstep-team', d: 'M370 370 H455', arrow: true },
     { id: '123-team', d: 'M525 250 V340', arrow: true },
   ],
   packets: [
@@ -56,7 +56,7 @@ const wide: Layout = {
     { edge: 'iit-lockstep', duration: 2.4, delay: 1.0 },
     { edge: 'lockstep-team', duration: 1.6, delay: 2.0 },
   ],
-  junctions: [[187, 220]],
+  junctions: [[190, 220]],
   caption: [10, 440],
 };
 
@@ -242,8 +242,9 @@ const tall: Layout = {
       svg.querySelectorAll<SVGCircleElement>('[data-packet]').forEach((packet) => {
         const edge = svg.querySelector<SVGPathElement>(`[data-edge="${packet.dataset.packet}"]`);
         if (!edge) return;
-        gsap.set(packet, { autoAlpha: 1 });
+        // Stay hidden through the start delay; otherwise the packet sits at the SVG origin.
         gsap.to(packet, {
+          onStart: () => gsap.set(packet, { autoAlpha: 1 }),
           motionPath: { path: edge, align: edge, alignOrigin: [0.5, 0.5] },
           duration: Number(packet.dataset.duration),
           delay: Number(packet.dataset.delay),
