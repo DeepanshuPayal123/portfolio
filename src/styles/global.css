@@ -73,6 +73,13 @@ body {
   background-position: -1px -1px;
 }
 
+/* Theme switch: the new theme is revealed by a growing circle (setTheme in src/lib/theme.ts). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--paper);

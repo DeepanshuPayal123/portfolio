@@ -1,0 +1,42 @@
+<button
+  type="button"
+  data-theme-toggle
+  aria-label="Switch to light theme"
+  class="grid size-9 place-items-center border border-line text-dim transition-colors hover:border-accent hover:text-accent"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-sun size-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+  </svg>
+  <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-moon size-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+    <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
+  </svg>
+</button>
+
+<style>
+  .icon-moon,
+  :global(:root[data-theme='light']) .icon-sun {
+    display: none;
+  }
+  :global(:root[data-theme='light']) .icon-moon {
+    display: block;
+  }
+</style>
+
+<script>
+  import { currentTheme, nextTheme, setTheme, type Theme } from '@/lib/theme';
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const label = (theme: Theme) =>
+    buttons.forEach((b) => b.setAttribute('aria-label', `Switch to ${nextTheme(theme)} theme`));
+
+  label(currentTheme());
+  buttons.forEach((button) =>
+    button.addEventListener('click', () => {
+      const next = nextTheme(currentTheme());
+      const rect = button.getBoundingClientRect();
+      setTheme(next, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+      label(next);
+    }),
+  );
+</script>

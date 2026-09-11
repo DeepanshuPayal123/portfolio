@@ -25,7 +25,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>
-      document.documentElement.dataset.motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduced' : 'on';
+      // Runs before first paint. Mirrors resolveInitialTheme() and THEME_COLORS in src/lib/theme.ts.
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch {}
+        const theme = stored === 'light' ? 'light' : 'dark';
+        const root = document.documentElement;
+        root.dataset.theme = theme;
+        root.dataset.motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduced' : 'on';
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute('content', theme === 'light' ? '#f4f1e8' : '#071426');
+      })();
     </script>
   </head>
   <body class="min-h-svh">
