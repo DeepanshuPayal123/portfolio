@@ -29,17 +29,23 @@ const mask = await getImage({ src: portrait, format: 'webp', width: 400 });
     width: min(100%, 26rem);
     margin-inline: auto;
   }
+  @media (max-width: 639px) {
+    .portrait {
+      width: min(82%, 19rem);
+    }
+  }
   .portrait :global(picture),
   .portrait :global(img) {
     display: block;
     width: 100%;
     height: auto;
   }
-  /* The photo paints in the first frame (it is the LCP element); every effect is an overlay. */
+  /* The photo paints in the first frame (it is the LCP element); every effect is an overlay.
+     No drop-shadow here: lossy AVIF/WebP alpha leaves faint noise in the transparent area,
+     and a shadow filter amplifies it into a visible box around the cutout. */
   .portrait :global(img) {
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 0 32px color-mix(in oklab, var(--accent) 28%, transparent));
     -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
     mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
   }

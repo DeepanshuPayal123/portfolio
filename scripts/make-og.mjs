@@ -1,51 +1,91 @@
-// Renders public/og.png — the 1200×630 link-preview card — from an inline HTML template.
-// Text mirrors src/data/site.ts; rerun after changing the name, role or headline.
+// Renders public/og.png — the 1200×630 link-preview card — in the site's night style, with the portrait.
+// Text mirrors src/data/site.ts; rerun after changing the name, role, headline or the portrait.
 //
 //   node scripts/make-og.mjs
 import { readFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
 
-const font = (pkg, file) => readFileSync(`node_modules/@fontsource/${pkg}/files/${file}`).toString('base64');
-const sans400 = font('ibm-plex-sans', 'ibm-plex-sans-latin-400-normal.woff2');
-const sans600 = font('ibm-plex-sans', 'ibm-plex-sans-latin-600-normal.woff2');
-const mono500 = font('ibm-plex-mono', 'ibm-plex-mono-latin-500-normal.woff2');
+const base64 = (path) => readFileSync(path).toString('base64');
+const sans = base64('node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2');
+const mono = base64('node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2');
+const portrait = base64('src/assets/portrait.png');
+
+// A fixed scatter of stars: seeded, so the card comes out identical on every run.
+let seed = 7;
+const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const stars = Array.from({ length: 90 }, () => {
+  const x = Math.round(rand() * 1200);
+  const y = Math.round(rand() * 470);
+  const size = rand() < 0.15 ? 1 : 0;
+  return `${x}px ${y}px 0 ${size}px rgb(220 232 255 / ${(0.25 + rand() * 0.6).toFixed(2)})`;
+}).join(',');
 
 const html = `<!doctype html><html><head><style>
-@font-face { font-family: Plex; font-weight: 400; src: url(data:font/woff2;base64,${sans400}) format('woff2'); }
-@font-face { font-family: Plex; font-weight: 600; src: url(data:font/woff2;base64,${sans600}) format('woff2'); }
-@font-face { font-family: PlexMono; src: url(data:font/woff2;base64,${mono500}) format('woff2'); }
+@font-face { font-family: Geist; font-weight: 100 900; src: url(data:font/woff2;base64,${sans}) format('woff2'); }
+@font-face { font-family: GeistMono; font-weight: 100 900; src: url(data:font/woff2;base64,${mono}) format('woff2'); }
 * { margin: 0; box-sizing: border-box; }
 body {
-  position: relative; width: 1200px; height: 630px; padding: 84px 88px;
-  display: flex; flex-direction: column; justify-content: space-between;
-  background-color: #071426; color: #dbe7ff; font-family: Plex;
-  background-image:
-    linear-gradient(rgb(120 170 255 / 0.17) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(120 170 255 / 0.17) 1px, transparent 1px),
-    linear-gradient(rgb(120 170 255 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(120 170 255 / 0.07) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-  background-position: -1px -1px;
+  position: relative; width: 1200px; height: 630px; overflow: hidden;
+  background: linear-gradient(to top, #0a1a3f, #050b1a 70%);
+  color: #e6edff; font-family: Geist;
 }
-.frame { position: absolute; inset: 32px; border: 1px solid rgb(94 225 255 / 0.35); }
-.label { font-family: PlexMono; font-size: 18px; letter-spacing: 0.16em; text-transform: uppercase; color: #8fa6c8; }
-h1 { margin-top: 18px; font-size: 136px; line-height: 0.9; font-weight: 600; letter-spacing: -0.02em; }
-.role { margin-top: 30px; font-size: 32px; } .role b { color: #5ee1ff; font-weight: 400; } .role span { color: #8fa6c8; }
-.chips { display: flex; gap: 14px; }
-.chip { font-family: PlexMono; font-size: 20px; padding: 10px 16px; border: 1px solid rgb(120 170 255 / 0.3); background: #0a1b33; }
+.stars { position: absolute; top: 0; left: 0; width: 1px; height: 1px; border-radius: 50%; box-shadow: ${stars}; }
+.planet {
+  position: absolute; left: -300px; top: 500px; width: 1800px; height: 1800px; border-radius: 50%;
+  background: #01030a;
+  box-shadow: 0 -3px 10px rgb(214 233 255 / 0.9), 0 -18px 60px rgb(61 123 255 / 0.85), 0 -80px 180px rgb(61 123 255 / 0.45);
+}
+.flare {
+  position: absolute; left: 800px; top: 468px; width: 280px; height: 70px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.95), rgb(160 200 255 / 0.5) 40%, transparent 75%);
+}
+.streak {
+  position: absolute; left: 0; right: 0; top: 497px; height: 6px; filter: blur(2px);
+  background: linear-gradient(90deg, transparent, rgb(190 215 255 / 0.55) 55%, transparent);
+}
+.glow {
+  position: absolute; right: 30px; top: 60px; width: 460px; height: 540px; border-radius: 50%; filter: blur(24px);
+  background: radial-gradient(closest-side, rgb(79 141 255 / 0.45), transparent 72%);
+}
+.portrait {
+  position: absolute; right: 80px; bottom: 40px; height: 560px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 98%);
+}
+.text { position: absolute; left: 80px; top: 86px; width: 660px; }
+.pill {
+  display: inline-block; padding: 8px 16px; border: 1px solid rgb(79 141 255 / 0.45); border-radius: 999px;
+  background: rgb(79 141 255 / 0.12); color: #6ea2ff; font-family: GeistMono; font-size: 16px; letter-spacing: 0.16em;
+}
+h1 { margin-top: 22px; font-size: 124px; line-height: 0.92; font-weight: 600; letter-spacing: -0.035em; }
+h1 span {
+  background: linear-gradient(100deg, #e6edff 10%, #4f8dff 55%, #5ee1ff 95%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.role { margin-top: 26px; font-size: 30px; font-weight: 500; line-height: 1.3; }
+.role span { color: #93a4c3; font-weight: 400; }
+.chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.chip {
+  padding: 9px 16px; border: 1px solid rgb(140 170 255 / 0.25); border-radius: 999px;
+  background: rgb(12 22 48 / 0.7); color: #dbe5ff; font-family: GeistMono; font-size: 18px;
+}
 .chip em { font-style: normal; color: #ffb454; }
 </style></head><body>
-<div class="frame"></div>
-<div>
-  <p class="label">DWG-001 · Portfolio</p>
-  <h1>Deepanshu</h1>
-  <p class="role"><b>Software Engineer</b><span> · IIT Jodhpur CSE '27 · distributed systems &amp; databases</span></p>
-</div>
-<div class="chips">
-  <span class="chip"><em>PRQLite</em> · SQL engine from scratch</span>
-  <span class="chip">123OfAI</span>
-  <span class="chip">Decklar</span>
-  <span class="chip">CGPA 9.17</span>
+<div class="stars"></div>
+<div class="glow"></div>
+<div class="planet"></div>
+<div class="streak"></div>
+<div class="flare"></div>
+<img class="portrait" src="data:image/png;base64,${portrait}" alt="">
+<div class="text">
+  <p class="pill">SOFTWARE ENGINEER</p>
+  <h1>Deep<span>anshu</span></h1>
+  <p class="role">IIT Jodhpur CSE '27 <span>· distributed systems &amp; databases</span></p>
+  <div class="chips">
+    <span class="chip"><em>PRQLite</em> · SQL engine from scratch</span>
+    <span class="chip">123OfAI</span>
+    <span class="chip">Decklar</span>
+    <span class="chip">CGPA 9.17</span>
+  </div>
 </div>
 </body></html>`;
 
