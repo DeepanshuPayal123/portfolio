@@ -38,7 +38,7 @@ const PALETTES: Record<SkyMode, SkyPalette> = {
     skyHorizon: rgb("#f6dcc8"),
     glow: rgb("#ffa866"),
     flare: rgb("#fff4e2"),
-    planet: rgb("#34405e"),
+    planet: rgb("#c9d5ec"),
     stars: 0.12,
     nebula: 0.25,
   },
