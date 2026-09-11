@@ -4,6 +4,7 @@ dist/
 .wrangler/
 test-results/
 playwright-report/
+.cache/
 .lighthouseci/
 .playwright-mcp/
 .env

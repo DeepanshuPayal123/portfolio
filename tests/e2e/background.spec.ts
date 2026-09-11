@@ -87,6 +87,11 @@ test.describe("with reduced motion", () => {
   test("one still frame is drawn and nothing moves", async ({ page }) => {
     await page.goto("/");
     await expect(sky(page)).toHaveAttribute("data-motion", "static");
+    // The Earth texture lands after load and triggers one more still frame; let it settle.
+    await expect(sky(page)).toHaveAttribute(
+      "data-earth",
+      /loaded|skipped|failed/,
+    );
     const first = await snapshot(page);
     await page.waitForTimeout(400);
     const second = await snapshot(page);

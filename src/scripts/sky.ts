@@ -1,3 +1,4 @@
+import { earthQuality, earthTexture } from "@/lib/sky/earth";
 import { createLoop } from "@/lib/sky/loop";
 import {
   palette,
@@ -7,7 +8,9 @@ import {
 } from "@/lib/sky/params";
 
 // The live background: one fullscreen triangle and one fragment shader — stars, a faint
-// nebula, and a planet limb whose atmosphere glows toward a sun flare on the horizon.
+// nebula, and Earth's limb, its atmosphere glowing toward a sun flare on the horizon.
+// The surface samples NASA imagery (city lights at night, Blue Marble at dawn), fetched
+// only after the page has loaded.
 
 const VERTEX = `
 attribute vec2 position;
@@ -27,6 +30,10 @@ uniform vec3 uFlare;
 uniform vec3 uPlanet;
 uniform float uStars;
 uniform float uNebula;
+uniform sampler2D uEarth;
+uniform float uEarthAmount;   // 0 until the texture is decoded, then eases to 1
+uniform float uEarthSpin;     // slow longitude drift
+uniform float uDawn;          // 0 = night lights, 1 = daylight map
 
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
@@ -69,6 +76,12 @@ float stars(vec2 uv, float scale, float seed) {
   return smoothstep(size, 0.0, length(local - jitter)) * twinkle * (h - 0.92) * 12.5;
 }
 
+vec3 rotateX(vec3 v, float a) {
+  float s = sin(a);
+  float c = cos(a);
+  return vec3(v.x, c * v.y - s * v.z, s * v.y + c * v.z);
+}
+
 void main() {
   float aspect = uResolution.x / uResolution.y;
   vec2 uv = gl_FragCoord.xy / uResolution.y;
@@ -99,6 +112,33 @@ void main() {
 
   float inside = smoothstep(0.002, -0.004, dist);
   vec3 surface = uPlanet + uGlow * 0.12 * exp(dist * 14.0) * (0.5 + sunward);
+
+  if (inside > 0.0 && uEarthAmount > 0.001) {
+    // Treat the disc as an orthographic sphere: screen position → surface normal → lat/lon.
+    // The tilt swings the visible band away from the pole, so the limb shows mid-latitudes.
+    vec2 rel = (p - centre) / radius;
+    float r2 = min(dot(rel, rel), 1.0);
+    vec3 normal = rotateX(vec3(rel, sqrt(1.0 - r2)), 1.15);
+    float lon = atan(normal.x, normal.z) + uEarthSpin;
+    float lat = asin(clamp(normal.y, -1.0, 1.0));
+    vec2 texUv = vec2(lon / 6.2831853 + 0.5, 0.5 - lat / 3.1415927);
+    vec3 earth = texture2D(uEarth, texUv).rgb;
+
+    // Night: the map is city lights on black — add them as emission over a dark globe.
+    float lights = dot(earth, vec3(0.36, 0.5, 0.14));
+    vec3 nightSide = uPlanet + earth * (1.6 + 2.4 * lights) + uGlow * 0.05 * lights;
+    // Dawn: the daylight map, lit from the sun side, desaturated a touch, and drowned in
+    // morning haze toward the limb so the surface never fights the text above it.
+    vec3 lit = earth * (0.5 + 0.9 * sunward);
+    float grey = dot(lit, vec3(0.299, 0.587, 0.114));
+    vec3 daySide = mix(uSkyHorizon, mix(vec3(grey), lit, 0.7), smoothstep(0.0, 0.3, -dist));
+
+    vec3 textured = mix(nightSide, daySide, uDawn);
+    // Fade the detail out at the very limb, where the atmosphere takes over.
+    float limbFade = smoothstep(0.0, 0.06, -dist);
+    surface = mix(surface, textured, uEarthAmount * limbFade);
+  }
+
   col = mix(col, surface, inside);
 
   vec2 sun = vec2(sunX, horizon + 0.004);
@@ -178,6 +218,10 @@ function start(canvas: HTMLCanvasElement) {
     planet: u("uPlanet"),
     stars: u("uStars"),
     nebula: u("uNebula"),
+    earth: u("uEarth"),
+    earthAmount: u("uEarthAmount"),
+    earthSpin: u("uEarthSpin"),
+    dawn: u("uDawn"),
   };
 
   const applyPalette = () => {
@@ -189,6 +233,7 @@ function start(canvas: HTMLCanvasElement) {
     gl.uniform3fv(uniforms.planet, colours.planet);
     gl.uniform1f(uniforms.stars, colours.stars);
     gl.uniform1f(uniforms.nebula, colours.nebula);
+    gl.uniform1f(uniforms.dawn, modeFromTheme() === "dawn" ? 1 : 0);
   };
 
   const resize = () => {
@@ -211,6 +256,8 @@ function start(canvas: HTMLCanvasElement) {
   let rise = riseTarget();
   let pointer: [number, number] = [0, 0];
   let pointerTarget: [number, number] = [0, 0];
+  let earthAmount = 0;
+  let earthReady = false;
 
   const draw = (timeMs: number) => {
     // Ease toward the targets so scrolling and pointer moves feel weighted, not twitchy.
@@ -220,9 +267,14 @@ function start(canvas: HTMLCanvasElement) {
       pointer[0] + (pointerTarget[0] - pointer[0]) * ease,
       pointer[1] + (pointerTarget[1] - pointer[1]) * ease,
     ];
+    // Fade the surface in once the texture is decoded; reduced motion snaps to it.
+    if (earthReady)
+      earthAmount += (1 - earthAmount) * (reducedMotion ? 1 : 0.04);
     gl.uniform1f(uniforms.time, timeMs / 1000);
     gl.uniform1f(uniforms.rise, rise);
     gl.uniform2f(uniforms.pointer, pointer[0], pointer[1]);
+    gl.uniform1f(uniforms.earthAmount, earthAmount);
+    gl.uniform1f(uniforms.earthSpin, (timeMs / 1000) * 0.004);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
@@ -250,6 +302,89 @@ function start(canvas: HTMLCanvasElement) {
     if (reducedMotion && canvas.dataset.motion) draw(0);
   };
 
+  // --- Earth texture -------------------------------------------------------
+  const texture = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    1,
+    1,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    new Uint8Array([0, 0, 0, 255]),
+  );
+  gl.uniform1i(uniforms.earth, 0);
+
+  const connection = (
+    navigator as Navigator & { connection?: { saveData?: boolean } }
+  ).connection;
+  const quality = earthQuality({
+    saveData: connection?.saveData,
+    deviceMemory: (navigator as Navigator & { deviceMemory?: number })
+      .deviceMemory,
+    hardwareConcurrency: navigator.hardwareConcurrency,
+    viewportWidth: window.innerWidth,
+  });
+
+  const loaded = new Set<string>();
+  const loadEarth = () => {
+    const url = earthTexture(modeFromTheme(), quality);
+    if (!url) {
+      canvas.dataset.earth = "skipped";
+      return;
+    }
+    if (loaded.has(url)) return;
+    const image = new Image();
+    image.decoding = "async";
+    image.src = url;
+    image
+      .decode()
+      .then(() => {
+        loaded.add(url);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGBA,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          image,
+        );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(
+          gl.TEXTURE_2D,
+          gl.TEXTURE_MIN_FILTER,
+          gl.LINEAR_MIPMAP_LINEAR,
+        );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        earthReady = true;
+        canvas.dataset.earth = "loaded";
+        redrawStill();
+      })
+      .catch(() => {
+        canvas.dataset.earth = "failed";
+      });
+  };
+
+  // Only after the page is loaded, so the texture never competes with the hero image.
+  const afterLoad = (cb: () => void) => {
+    const schedule = () =>
+      "requestIdleCallback" in window
+        ? window.requestIdleCallback(cb, { timeout: 2000 })
+        : setTimeout(cb, 400);
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
+  };
+  afterLoad(loadEarth);
+
+  // --- Events --------------------------------------------------------------
   window.addEventListener("resize", () => {
     resize();
     redrawStill();
@@ -272,6 +407,8 @@ function start(canvas: HTMLCanvasElement) {
 
   new MutationObserver(() => {
     applyPalette();
+    if (canvas.dataset.earth === "loaded" || canvas.dataset.earth === undefined)
+      loadEarth();
     redrawStill();
   }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
 
