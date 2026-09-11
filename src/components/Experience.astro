@@ -14,7 +14,11 @@ import { site } from '@/data/site';
             class="absolute top-7 -left-[1.9rem] size-3 rotate-45 border border-accent bg-paper sm:-left-[2.9rem]"
             aria-hidden="true"
           />
-          <article class="frame p-6 sm:p-8">
+          <article
+            id={`job-${job.company.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+            data-reveal
+            class="frame p-6 sm:p-8"
+          >
             <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 class="text-xl font-semibold">
                 {job.company}

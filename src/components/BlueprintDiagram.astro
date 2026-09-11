@@ -1,0 +1,261 @@
+---
+// The hero figure: career and projects drawn as a system diagram. Two layouts —
+// an architecture view for wide screens and a chronological spine for phones.
+
+interface DiagramNode {
+  label: string;
+  sub: string;
+  aria: string;
+  href: string;
+  x: number;
+  y: number;
+  dashed?: boolean;
+}
+
+interface Layout {
+  name: 'wide' | 'tall';
+  viewBox: string;
+  class: string;
+  size: { w: number; h: number };
+  nodes: DiagramNode[];
+  edges: { id: string; d: string; arrow: boolean }[];
+  packets: { edge: string; duration: number; delay: number }[];
+  junctions: [number, number][];
+  caption: [number, number];
+}
+
+const wide: Layout = {
+  name: 'wide',
+  viewBox: '0 0 600 450',
+  class: 'hidden w-full sm:block',
+  size: { w: 130, h: 60 },
+  nodes: [
+    { label: 'IIT Jodhpur', sub: "CSE '27 · 9.17", aria: 'education', href: '#education', x: 10, y: 190 },
+    { label: 'PRQLite', sub: 'C++17 DB engine', aria: 'database engine project', href: '#prqlite', x: 235, y: 40 },
+    { label: 'Decklar', sub: 'Wi-Fi PoD · 2025', aria: 'internship', href: '#job-decklar', x: 235, y: 190 },
+    { label: 'LOCKSTEP', sub: 'Raft KV store', aria: 'Raft project', href: '#lockstep', x: 235, y: 340 },
+    { label: 'InduBindu ERP', sub: '1000+ orders/day', aria: 'ERP project', href: '#erp', x: 460, y: 40 },
+    { label: '123OfAI', sub: 'contests · 2026', aria: 'internship', href: '#job-123ofai', x: 460, y: 190 },
+    { label: 'Your team', sub: 'next deploy', aria: 'get in touch', href: '#contact', x: 460, y: 340, dashed: true },
+  ],
+  edges: [
+    { id: 'iit-prqlite', d: 'M140 220 H187 V70 H235', arrow: true },
+    { id: 'iit-decklar', d: 'M140 220 H235', arrow: true },
+    { id: 'iit-lockstep', d: 'M140 220 H187 V370 H235', arrow: true },
+    { id: 'prqlite-erp', d: 'M365 70 H460', arrow: true },
+    { id: 'decklar-123', d: 'M365 220 H460', arrow: true },
+    { id: 'lockstep-team', d: 'M365 370 H460', arrow: true },
+    { id: '123-team', d: 'M525 250 V340', arrow: true },
+  ],
+  packets: [
+    { edge: 'iit-decklar', duration: 1.6, delay: 0 },
+    { edge: 'decklar-123', duration: 1.6, delay: 0.8 },
+    { edge: '123-team', duration: 1.3, delay: 1.6 },
+    { edge: 'iit-prqlite', duration: 2.4, delay: 0.4 },
+    { edge: 'prqlite-erp', duration: 1.6, delay: 1.2 },
+    { edge: 'iit-lockstep', duration: 2.4, delay: 1.0 },
+    { edge: 'lockstep-team', duration: 1.6, delay: 2.0 },
+  ],
+  junctions: [[187, 220]],
+  caption: [10, 440],
+};
+
+const spineX = 28;
+const tallY = (i: number) => 10 + i * 80;
+const tallNodes: Omit<DiagramNode, 'x' | 'y'>[] = [
+  { label: 'IIT Jodhpur', sub: "2023 → '27 · CGPA 9.17", aria: 'education', href: '#education' },
+  { label: 'LOCKSTEP', sub: 'Nov 2024 · Raft KV store', aria: 'Raft project', href: '#lockstep' },
+  { label: 'PRQLite', sub: 'Mar 2025 · C++17 DB engine', aria: 'database engine project', href: '#prqlite' },
+  { label: 'Decklar', sub: '2025 · Wi-Fi PoD engine', aria: 'internship', href: '#job-decklar' },
+  { label: 'InduBindu ERP', sub: 'Feb 2026 · 1000+ orders/day', aria: 'ERP project', href: '#erp' },
+  { label: '123OfAI', sub: '2026 · contest platform', aria: 'internship', href: '#job-123ofai' },
+  { label: 'Your team', sub: 'next deploy', aria: 'get in touch', href: '#contact', dashed: true },
+];
+
+const tall: Layout = {
+  name: 'tall',
+  viewBox: `0 0 320 ${tallY(tallNodes.length - 1) + 76}`,
+  class: 'mx-auto w-full max-w-sm sm:hidden',
+  size: { w: 250, h: 56 },
+  nodes: tallNodes.map((n, i) => ({ ...n, x: 56, y: tallY(i) })),
+  edges: [
+    { id: 'spine', d: `M${spineX} ${tallY(0) + 28} V${tallY(tallNodes.length - 1) + 28}`, arrow: false },
+    ...tallNodes.map((_, i) => ({ id: `stub-${i}`, d: `M${spineX} ${tallY(i) + 28} H56`, arrow: true })),
+  ],
+  packets: [
+    { edge: 'spine', duration: 5, delay: 0 },
+    { edge: 'spine', duration: 5, delay: 2.5 },
+  ],
+  junctions: tallNodes.map((_, i): [number, number] => [spineX, tallY(i) + 28]),
+  caption: [0, tallY(tallNodes.length - 1) + 72],
+};
+---
+
+<div class="w-full">
+  {
+    [wide, tall].map((layout) => (
+      <svg
+        data-diagram={layout.name}
+        viewBox={layout.viewBox}
+        class={layout.class}
+        role="group"
+        aria-label="Career and projects drawn as a system diagram"
+      >
+        <defs>
+          <marker
+            id={`arrow-${layout.name}`}
+            viewBox="0 0 8 8"
+            refX="7"
+            refY="4"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path d="M0 0 L8 4 L0 8 z" class="arrowhead" />
+          </marker>
+        </defs>
+
+        {layout.edges.map((e) => (
+          <path data-edge={e.id} d={e.d} class="edge" marker-end={e.arrow ? `url(#arrow-${layout.name})` : undefined} />
+        ))}
+        {layout.junctions.map(([cx, cy]) => (
+          <circle cx={cx} cy={cy} r="2.5" class="junction" />
+        ))}
+
+        {layout.nodes.map((n) => (
+          <a href={n.href} data-node aria-label={`${n.label} — ${n.aria}`}>
+            <rect x={n.x} y={n.y} width={layout.size.w} height={layout.size.h} class:list={['box', { dashed: n.dashed }]} />
+            <path d={`M${n.x} ${n.y + 10} V${n.y} H${n.x + 10}`} class="tick" />
+            <text x={n.x + 14} y={n.y + 25} class="label">
+              {n.label.toUpperCase()}
+            </text>
+            <text x={n.x + 14} y={n.y + 44} class="sub">
+              {n.sub}
+            </text>
+          </a>
+        ))}
+
+        {layout.packets.map((p) => (
+          <circle data-packet={p.edge} data-duration={p.duration} data-delay={p.delay} r="3.5" class="packet" />
+        ))}
+
+        <text x={layout.caption[0]} y={layout.caption[1]} class="caption">
+          FIG. 1 — CAREER AS A DISTRIBUTED SYSTEM
+        </text>
+      </svg>
+    ))
+  }
+</div>
+
+<style>
+  .edge {
+    fill: none;
+    stroke: var(--accent);
+    stroke-opacity: 0.55;
+    stroke-width: 1.25;
+  }
+  /* Until the script takes over, keep edges hidden so the draw-in doesn't flash. */
+  :global(:root[data-motion='on']) [data-diagram]:not([data-motion]) .edge {
+    opacity: 0;
+  }
+  .arrowhead,
+  .junction {
+    fill: var(--accent);
+  }
+  .box {
+    fill: var(--panel);
+    stroke: var(--line-strong);
+    transition: stroke 0.15s;
+  }
+  .box.dashed {
+    stroke: var(--amber);
+    stroke-dasharray: 4 4;
+  }
+  .tick {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    fill: var(--ink);
+  }
+  .sub {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: var(--ink-dim);
+  }
+  .caption {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    fill: var(--ink-dim);
+  }
+  a:hover .box,
+  a:focus-visible .box {
+    stroke: var(--accent);
+  }
+  a:focus-visible {
+    outline: none;
+  }
+  a:focus-visible .box {
+    stroke-width: 2;
+  }
+  .packet {
+    fill: var(--amber);
+    visibility: hidden;
+    filter: drop-shadow(0 0 4px var(--amber));
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+
+  gsap.registerPlugin(MotionPathPlugin);
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function animate(svg: SVGSVGElement) {
+    if (svg.dataset.motion) return;
+    if (reduced.matches) {
+      svg.dataset.motion = 'static';
+      return;
+    }
+    // The other layout is display:none; it gets animated if a resize reveals it.
+    if (svg.getClientRects().length === 0) return;
+    svg.dataset.motion = 'live';
+
+    const timeline = gsap.timeline();
+    svg.querySelectorAll<SVGPathElement>('[data-edge]').forEach((edge, i) => {
+      const length = edge.getTotalLength();
+      timeline.fromTo(
+        edge,
+        { strokeDasharray: length, strokeDashoffset: length },
+        { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut', clearProps: 'strokeDasharray,strokeDashoffset' },
+        0.15 + i * 0.08,
+      );
+    });
+
+    timeline.call(() => {
+      svg.querySelectorAll<SVGCircleElement>('[data-packet]').forEach((packet) => {
+        const edge = svg.querySelector<SVGPathElement>(`[data-edge="${packet.dataset.packet}"]`);
+        if (!edge) return;
+        gsap.set(packet, { autoAlpha: 1 });
+        gsap.to(packet, {
+          motionPath: { path: edge, align: edge, alignOrigin: [0.5, 0.5] },
+          duration: Number(packet.dataset.duration),
+          delay: Number(packet.dataset.delay),
+          ease: 'none',
+          repeat: -1,
+          repeatDelay: 0.8,
+        });
+      });
+    });
+  }
+
+  const init = () => document.querySelectorAll<SVGSVGElement>('[data-diagram]').forEach(animate);
+  init();
+  window.matchMedia('(min-width: 640px)').addEventListener('change', init);
+</script>

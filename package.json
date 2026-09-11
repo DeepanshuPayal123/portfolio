@@ -7,7 +7,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "npm run build && playwright test",
     "test:release": "RELEASE=1 vitest run tests/unit/release.test.ts",
     "golden": "node scripts/make-golden.mjs ../PRQLite"
   },

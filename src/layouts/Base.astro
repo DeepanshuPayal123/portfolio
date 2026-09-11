@@ -24,6 +24,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      document.documentElement.dataset.motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduced' : 'on';
+    </script>
   </head>
   <body class="min-h-svh">
     <a
@@ -32,5 +35,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       >Skip to content</a
     >
     <slot />
+    <script>
+      import '@/scripts/motion';
+    </script>
   </body>
 </html>

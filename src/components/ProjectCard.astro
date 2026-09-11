@@ -12,7 +12,7 @@ const credit = project.credit;
 const [creditBefore, creditAfter] = credit ? credit.text.split(credit.label) : [];
 ---
 
-<article class:list={['frame flex flex-col p-6 sm:p-8', className]}>
+<article id={project.id} data-reveal class:list={['frame flex flex-col p-6 sm:p-8', className]}>
   <p class="mono-label">{project.kind}</p>
   <div class="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
     <h3 class="text-2xl font-semibold tracking-tight">{project.name}</h3>

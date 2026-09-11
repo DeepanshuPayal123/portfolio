@@ -9,7 +9,7 @@ import { site } from '@/data/site';
   <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {
       site.skills.map((group) => (
-        <div class="frame p-5">
+        <div data-reveal class="frame p-5">
           <h3 class="mono-label text-accent!">{group.group}</h3>
           <ul class="mt-4 flex flex-wrap gap-2">
             {group.items.map((item) => (

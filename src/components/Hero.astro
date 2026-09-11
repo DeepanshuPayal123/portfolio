@@ -1,24 +1,36 @@
 ---
+import BlueprintDiagram from '@/components/BlueprintDiagram.astro';
 import Icon from '@/components/Icon.astro';
 import { site } from '@/data/site';
 ---
 
-<section id="top" class="mx-auto max-w-6xl px-4 pt-10 pb-16 sm:px-6 sm:pt-20 lg:pb-24">
-  <p class="mono-label">DWG-001 · Portfolio · Rev 2026.09</p>
+<section
+  id="top"
+  class="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-10 pb-16 sm:px-6 sm:pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:pb-24"
+>
+  <div>
+    <p class="mono-label">DWG-001 · Portfolio · Rev 2026.09</p>
 
-  <h1 class="mt-4 text-[clamp(3.25rem,13vw,7rem)] leading-[0.9] font-semibold tracking-tight">{site.name}</h1>
-  <p class="dimension mt-4 max-w-md" aria-hidden="true">IIT Jodhpur · CSE '27</p>
+    <h1
+      class="mt-4 text-[clamp(3.25rem,13vw,7rem)] leading-[0.9] font-semibold tracking-tight lg:text-[5.5rem] xl:text-[6.25rem]"
+    >
+      {site.name}
+    </h1>
+    <p class="dimension mt-4 max-w-md" aria-hidden="true">B.Tech CSE · CGPA {site.education.cgpa.split(' ')[0]}</p>
 
-  <p class="mt-6 text-lg sm:text-xl">
-    <span class="text-accent">{site.role}</span>
-    <span class="text-dim"> · {site.headline}</span>
-  </p>
-  <p class="mt-4 max-w-2xl leading-relaxed text-dim">{site.intro}</p>
+    <p class="mt-6 text-lg sm:text-xl">
+      <span class="text-accent">{site.role}</span>
+      <span class="text-dim"> · {site.headline}</span>
+    </p>
+    <p class="mt-4 max-w-2xl leading-relaxed text-dim">{site.intro}</p>
 
-  <div class="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:flex sm:flex-wrap">
-    <a href={site.links.resume} class="btn btn-primary"><Icon name="download" />Resume</a>
-    <a href={site.links.github} class="btn" rel="me"><Icon name="github" />GitHub</a>
-    <a href={site.links.linkedin} class="btn" rel="me"><Icon name="linkedin" />LinkedIn</a>
-    <a href={`mailto:${site.email}`} class="btn"><Icon name="mail" />Email</a>
+    <div class="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+      <a href={site.links.resume} class="btn btn-primary"><Icon name="download" />Resume</a>
+      <a href={site.links.github} class="btn" rel="me"><Icon name="github" />GitHub</a>
+      <a href={site.links.linkedin} class="btn" rel="me"><Icon name="linkedin" />LinkedIn</a>
+      <a href={`mailto:${site.email}`} class="btn"><Icon name="mail" />Email</a>
+    </div>
   </div>
+
+  <BlueprintDiagram />
 </section>

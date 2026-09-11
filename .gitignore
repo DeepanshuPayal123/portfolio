@@ -5,6 +5,7 @@ dist/
 test-results/
 playwright-report/
 .lighthouseci/
+.playwright-mcp/
 .env
 .env.*
 .DS_Store
