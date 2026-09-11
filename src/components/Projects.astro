@@ -1,0 +1,16 @@
+---
+import ProjectCard from '@/components/ProjectCard.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import { site } from '@/data/site';
+
+const [prqlite, ...others] = site.projects;
+---
+
+<section id="projects" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+  <SectionHeader sheet="03" title="Projects" note="Systems · full stack" />
+
+  <div class="mt-10 grid gap-6 md:grid-cols-2">
+    {prqlite && <ProjectCard project={prqlite} class="md:col-span-2" />}
+    {others.map((project) => <ProjectCard project={project} />)}
+  </div>
+</section>

@@ -1,0 +1,28 @@
+---
+import Icon from '@/components/Icon.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import { site } from '@/data/site';
+---
+
+<section id="contact" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+  <SectionHeader sheet="06" title="Contact" />
+
+  <div class="frame mt-10 p-6 sm:p-12">
+    <p class="text-3xl font-semibold tracking-tight sm:text-5xl">Let's build something that doesn't fall over.</p>
+    <p class="mt-4 text-dim">Email is the fastest way to reach me.</p>
+    <a
+      href={`mailto:${site.email}`}
+      class="mt-6 inline-flex items-center gap-3 font-mono text-lg break-all text-accent hover:underline sm:text-2xl"
+    >
+      {site.email}
+      <Icon name="arrow" class="size-5 shrink-0" />
+    </a>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href={site.links.linkedin} class="btn" rel="me"><Icon name="linkedin" />LinkedIn</a>
+      <a href={site.links.github} class="btn" rel="me"><Icon name="github" />GitHub</a>
+      <a href={site.links.resume} class="btn"><Icon name="download" />Resume (PDF)</a>
+    </div>
+    <p class="mono-label mt-10">{site.location}</p>
+  </div>
+</section>

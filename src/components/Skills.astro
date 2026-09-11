@@ -1,0 +1,23 @@
+---
+import SectionHeader from '@/components/SectionHeader.astro';
+import { site } from '@/data/site';
+---
+
+<section id="skills" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+  <SectionHeader sheet="04" title="Skills" />
+
+  <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      site.skills.map((group) => (
+        <div class="frame p-5">
+          <h3 class="mono-label text-accent!">{group.group}</h3>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {group.items.map((item) => (
+              <li class="chip text-ink!">{item}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

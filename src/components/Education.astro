@@ -1,0 +1,43 @@
+---
+import SectionHeader from '@/components/SectionHeader.astro';
+import { site } from '@/data/site';
+
+const { education, positions } = site;
+---
+
+<section id="education" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+  <SectionHeader sheet="05" title="Education" note="& responsibilities" />
+
+  <div class="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+    <article class="frame p-6 sm:p-8">
+      <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 class="text-xl font-semibold">{education.school}</h3>
+        <p class="mono-label">{education.period}</p>
+      </div>
+      <p class="mt-2 text-dim">{education.degree}</p>
+
+      <div class="mt-6 flex flex-col-reverse border-l-2 border-accent pl-4">
+        <p class="mono-label mt-1">CGPA</p>
+        <p class="font-mono text-3xl text-accent">{education.cgpa}</p>
+      </div>
+
+      <h4 class="mono-label mt-6">Coursework</h4>
+      <ul class="mt-3 flex flex-wrap gap-2">
+        {education.coursework.map((c) => <li class="chip">{c}</li>)}
+      </ul>
+    </article>
+
+    <ul class="grid gap-4">
+      {
+        positions.map((p) => (
+          <li class="frame p-6">
+            <p class="mono-label">
+              {p.period} · {p.org}
+            </p>
+            <p class="mt-2 font-medium">{p.title}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

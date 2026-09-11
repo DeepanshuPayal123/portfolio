@@ -1,0 +1,15 @@
+---
+interface Props {
+  sheet: string;
+  title: string;
+  note?: string;
+}
+
+const { sheet, title, note } = Astro.props;
+---
+
+<div class="flex items-baseline gap-4 border-b border-line pb-3">
+  <span class="mono-label text-accent!">Sheet {sheet}</span>
+  <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
+  {note && <span class="mono-label ml-auto hidden sm:inline">{note}</span>}
+</div>

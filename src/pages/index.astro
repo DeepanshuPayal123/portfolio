@@ -1,0 +1,28 @@
+---
+import Contact from '@/components/Contact.astro';
+import Education from '@/components/Education.astro';
+import Experience from '@/components/Experience.astro';
+import Hero from '@/components/Hero.astro';
+import Projects from '@/components/Projects.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import Skills from '@/components/Skills.astro';
+import { site } from '@/data/site';
+import Base from '@/layouts/Base.astro';
+
+const title = `${site.name} · ${site.role}`;
+const description = `${site.name}, ${site.role} (${site.headline}). Built PRQLite, a relational database engine from scratch in C++17; interned at 123OfAI and Decklar.`;
+---
+
+<Base title={title} description={description}>
+  <SiteHeader />
+  <main id="main" class="pt-14">
+    <Hero />
+    <Experience />
+    <Projects />
+    <Skills />
+    <Education />
+    <Contact />
+  </main>
+  <SiteFooter />
+</Base>

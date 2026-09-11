@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+
+@theme inline {
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-dim: var(--ink-dim);
+  --color-line: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-amber: var(--amber);
+  --color-ok: var(--ok);
+  --color-err: var(--err);
+}
+
+/* Dark "blueprint" is the default; light is "paper". Contrast of --ink-dim and --accent
+   against --paper is ≥ 5:1 in both. */
+:root {
+  color-scheme: dark;
+  --paper: #071426;
+  --panel: #0a1b33;
+  --ink: #dbe7ff;
+  --ink-dim: #8fa6c8;
+  --line: rgb(120 170 255 / 0.07);
+  --line-strong: rgb(120 170 255 / 0.17);
+  --accent: #5ee1ff;
+  --amber: #ffb454;
+  --ok: #5bd69a;
+  --err: #ff7a7a;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --paper: #f4f1e8;
+  --panel: #ece7d9;
+  --ink: #13233f;
+  --ink-dim: #4a5b78;
+  --line: rgb(19 35 63 / 0.06);
+  --line-strong: rgb(19 35 63 / 0.15);
+  --accent: #1f5fd6;
+  --amber: #9a5406;
+  --ok: #1d7a4c;
+  --err: #b8322f;
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  /* Two-level drafting grid: 24px minor, 120px major. */
+  background-image:
+    linear-gradient(var(--line-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-strong) 1px, transparent 1px),
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  background-position: -1px -1px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@layer components {
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* A panel with drafting registration marks in its four corners. */
+  .frame {
+    --tick: 12px;
+    --c: var(--accent);
+    border: 1px solid var(--line-strong);
+    background:
+      linear-gradient(var(--c), var(--c)) top left / var(--tick) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) top left / 1px var(--tick) no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / var(--tick) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / 1px var(--tick) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / var(--tick) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / 1px var(--tick) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / var(--tick) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / 1px var(--tick) no-repeat,
+      color-mix(in oklab, var(--panel) 86%, transparent);
+  }
+
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-dim);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    background: color-mix(in oklab, var(--panel) 80%, transparent);
+    transition:
+      border-color 0.15s,
+      color 0.15s,
+      transform 0.15s;
+  }
+  .btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    color: var(--paper);
+    filter: brightness(1.08);
+  }
+
+  /* Drafting dimension line: |——— label ———| */
+  .dimension {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .dimension::before,
+  .dimension::after {
+    content: '';
+    flex: 1;
+    height: 9px;
+    border-block-end: 1px solid currentColor;
+    border-inline: 1px solid currentColor;
+    transform: translateY(-4px);
+  }
+  .dimension::before {
+    border-inline-end: 0;
+  }
+  .dimension::after {
+    border-inline-start: 0;
+  }
+}
