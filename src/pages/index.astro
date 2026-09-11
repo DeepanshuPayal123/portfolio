@@ -8,6 +8,7 @@ import SiteFooter from '@/components/SiteFooter.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import Skills from '@/components/Skills.astro';
 import { site } from '@/data/site';
+import Terminal from '@/islands/Terminal';
 import Base from '@/layouts/Base.astro';
 
 const title = `${site.name} · ${site.role}`;
@@ -25,4 +26,5 @@ const description = `${site.name}, ${site.role} (${site.headline}). Built PRQLit
     <Contact />
   </main>
   <SiteFooter />
+  <Terminal client:idle />
 </Base>

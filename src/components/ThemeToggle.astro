@@ -24,19 +24,22 @@
 </style>
 
 <script>
-  import { currentTheme, nextTheme, setTheme, type Theme } from '@/lib/theme';
+  import { currentTheme, nextTheme, setTheme } from '@/lib/theme';
 
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
-  const label = (theme: Theme) =>
-    buttons.forEach((b) => b.setAttribute('aria-label', `Switch to ${nextTheme(theme)} theme`));
+  const label = () => {
+    const next = nextTheme(currentTheme());
+    buttons.forEach((b) => b.setAttribute('aria-label', `Switch to ${next} theme`));
+  };
 
-  label(currentTheme());
+  label();
+  // The palette and terminal can switch themes too; follow <html data-theme> rather than clicks.
+  new MutationObserver(label).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
   buttons.forEach((button) =>
     button.addEventListener('click', () => {
-      const next = nextTheme(currentTheme());
       const rect = button.getBoundingClientRect();
-      setTheme(next, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-      label(next);
+      setTheme(nextTheme(currentTheme()), { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
     }),
   );
 </script>

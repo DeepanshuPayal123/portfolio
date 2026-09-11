@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from '@/components/ThemeToggle.astro';
+import CommandPalette from '@/islands/CommandPalette';
 
 const sections = [
   { href: '#experience', label: 'Experience' },
@@ -16,7 +17,10 @@ const sections = [
       <nav aria-label="Sections" class="hidden items-center gap-6 sm:flex">
         {sections.map((s) => <a href={s.href} class="mono-label transition-colors hover:text-accent">{s.label}</a>)}
       </nav>
-      <ThemeToggle />
+      <div class="flex items-center gap-2">
+        <CommandPalette client:idle />
+        <ThemeToggle />
+      </div>
     </div>
   </div>
 </header>
