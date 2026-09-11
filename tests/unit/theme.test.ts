@@ -27,7 +27,7 @@ describe("theme", () => {
   });
 
   test("browser chrome colors match the page grounds", () => {
-    expect(THEME_COLORS).toEqual({ dark: "#071426", light: "#f4f1e8" });
+    expect(THEME_COLORS).toEqual({ dark: "#050b1a", light: "#eef2fb" });
     expect(THEME_STORAGE_KEY).toBe("theme");
   });
 });

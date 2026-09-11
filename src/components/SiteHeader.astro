@@ -1,5 +1,7 @@
 ---
+import Icon from '@/components/Icon.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
+import { site } from '@/data/site';
 import CommandPalette from '@/islands/CommandPalette';
 
 const sections = [
@@ -10,16 +12,27 @@ const sections = [
 ];
 ---
 
-<header class="fixed inset-x-0 top-0 z-40 border-b border-line bg-paper/80 backdrop-blur-md">
-  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-    <a href="#top" class="font-mono text-sm tracking-[0.2em]">DEEPANSHU<span class="text-accent">/</span>SDE</a>
+<header class="glass-blur fixed inset-x-0 top-0 z-40 border-b border-line bg-paper/70">
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+    <a href="#top" class="text-lg font-semibold tracking-tight">
+      {site.name}<span class="text-accent">.</span>
+    </a>
     <div class="flex items-center gap-6">
-      <nav aria-label="Sections" class="hidden items-center gap-6 sm:flex">
-        {sections.map((s) => <a href={s.href} class="mono-label transition-colors hover:text-accent">{s.label}</a>)}
+      <nav aria-label="Sections" class="hidden items-center gap-6 md:flex">
+        {
+          sections.map((s) => (
+            <a href={s.href} class="text-sm text-dim transition-colors hover:text-ink">
+              {s.label}
+            </a>
+          ))
+        }
       </nav>
       <div class="flex items-center gap-2">
         <CommandPalette client:idle />
         <ThemeToggle />
+        <a href={site.links.resume} class="btn btn-primary px-4! py-2! text-sm!">
+          Resume <Icon name="external" class="size-3.5" />
+        </a>
       </div>
     </div>
   </div>

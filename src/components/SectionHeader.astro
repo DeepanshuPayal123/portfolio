@@ -1,15 +1,17 @@
 ---
 interface Props {
-  sheet: string;
+  /** Short eyebrow shown in the pill, e.g. "Experience". */
+  label: string;
+  /** The section's heading. */
   title: string;
   note?: string;
 }
 
-const { sheet, title, note } = Astro.props;
+const { label, title, note } = Astro.props;
 ---
 
-<div data-reveal class="flex items-baseline gap-4 border-b border-line pb-3">
-  <span class="mono-label text-accent!">Sheet {sheet}</span>
-  <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
-  {note && <span class="mono-label ml-auto hidden sm:inline">{note}</span>}
+<div data-reveal class="max-w-3xl">
+  <p class="pill-label">{label}</p>
+  <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">{title}</h2>
+  {note && <p class="mt-3 text-base text-dim sm:text-lg">{note}</p>}
 </div>

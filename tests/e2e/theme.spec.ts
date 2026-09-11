@@ -19,7 +19,7 @@ test("the toggle switches theme and the choice survives a reload", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
     "content",
-    "#f4f1e8",
+    "#eef2fb",
   );
   await expect(page.getByRole("button", { name: /dark theme/i })).toBeVisible();
 

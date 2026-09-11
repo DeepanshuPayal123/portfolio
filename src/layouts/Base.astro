@@ -32,7 +32,7 @@ const person = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#071426" />
+    <meta name="theme-color" content="#050b1a" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -57,7 +57,7 @@ const person = {
         root.dataset.motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduced' : 'on';
         document
           .querySelector('meta[name="theme-color"]')
-          ?.setAttribute('content', theme === 'light' ? '#f4f1e8' : '#071426');
+          ?.setAttribute('content', theme === 'light' ? '#eef2fb' : '#050b1a');
       })();
     </script>
   </head>

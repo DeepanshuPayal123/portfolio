@@ -3,8 +3,8 @@ export type Theme = "dark" | "light";
 export const THEME_STORAGE_KEY = "theme";
 /** <meta name="theme-color"> per theme, matching --paper. */
 export const THEME_COLORS: Record<Theme, string> = {
-  dark: "#071426",
-  light: "#f4f1e8",
+  dark: "#050b1a",
+  light: "#eef2fb",
 };
 
 /** Dark blueprint unless the visitor chose light before. Mirrored by the inline script in Base.astro. */
