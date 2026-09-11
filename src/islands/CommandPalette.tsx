@@ -137,7 +137,7 @@ export default function CommandPalette() {
           onClick={(e) => show(e.currentTarget)}
           aria-label="Open command palette"
           aria-haspopup="dialog"
-          className="inline-flex h-9 items-center gap-2 border border-line px-2.5 font-mono text-xs text-dim transition-colors hover:border-accent hover:text-accent"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-line px-3 font-mono text-xs text-dim transition-colors hover:border-accent hover:text-accent"
         >
           <svg
             viewBox="0 0 24 24"
