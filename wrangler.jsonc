@@ -1,8 +1,6 @@
+// Cloudflare Pages project: https://deepanshupayal.pages.dev
 {
-  "name": "deepanshu-portfolio",
+  "name": "deepanshupayal",
   "compatibility_date": "2026-09-11",
-  "assets": {
-    "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+  "pages_build_output_dir": "./dist",
 }

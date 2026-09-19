@@ -1,0 +1,8 @@
+// Deploy: npx wrangler deploy -c workers/legacy-redirect/wrangler.jsonc
+{
+  "name": "deepanshu-portfolio",
+  "main": "index.ts",
+  "compatibility_date": "2026-09-11",
+  // Only the redirect answers; old per-version preview links stay off.
+  "preview_urls": false,
+}

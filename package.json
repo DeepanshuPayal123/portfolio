@@ -12,7 +12,7 @@
     "golden": "node scripts/make-golden.mjs ../PRQLite",
     "lighthouse": "node scripts/lighthouse.mjs",
     "og": "node scripts/make-og.mjs",
-    "deploy": "npm run build && npm run test:release && wrangler deploy"
+    "deploy": "npm run build && npm run test:release && wrangler pages deploy dist --project-name deepanshupayal --branch main && node scripts/prune-deployments.mjs"
   },
   "type": "module",
   "engines": {
