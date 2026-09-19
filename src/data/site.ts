@@ -145,58 +145,27 @@ export const site = {
   ] satisfies Project[],
 
   skills: [
-    {
-      group: "Languages",
-      items: ["C++", "Python", "TypeScript", "JavaScript", "SQL"],
-    },
-    {
-      group: "Backend & systems",
-      items: [
-        "Node.js",
-        "Express",
-        "REST",
-        "gRPC / Protobuf",
-        "WebSockets",
-        "Webhooks",
-        "Multithreading",
-      ],
-    },
-    {
-      group: "Data & infra",
-      items: [
-        "PostgreSQL",
-        "Redis",
-        "Azure (Blob, Table, OpenAI)",
-        "Docker",
-        "Linux",
-        "GitHub Actions",
-      ],
-    },
+    { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "C++", "SQL"] },
     {
       group: "Frontend",
-      items: ["React", "Next.js", "React Flow", "Leaflet", "Vite", "Tailwind"],
+      items: ["React", "Next.js", "Angular", "HTML/CSS", "Tailwind", "React Flow", "Leaflet", "Vite"],
     },
     {
-      group: "Tools",
-      items: [
-        "Git",
-        "Jest",
-        "pytest",
-        "Postman",
-        "pandas",
-        "NumPy",
-        "scikit-learn",
-      ],
+      group: "Backend",
+      items: ["Node.js", "Express", "NestJS", "FastAPI", "REST", "gRPC / Protocol Buffers", "WebSockets", "Webhooks"],
+    },
+    { group: "Databases", items: ["PostgreSQL", "Redis", "Azure Table Storage (NoSQL)", "MongoDB"] },
+    {
+      group: "Testing & Automation",
+      items: ["Jest", "Supertest", "Playwright", "pytest", "Selenium", "Cucumber (BDD)", "Robot Framework", "Postman"],
+    },
+    {
+      group: "Cloud, DevOps & AI Tools",
+      items: ["Azure (Blob, Table, OpenAI)", "Docker", "Linux", "Git", "GitHub Actions CI/CD", "Claude Code", "GitHub Copilot"],
     },
     {
       group: "Concepts",
-      items: [
-        "Distributed consensus",
-        "Concurrency",
-        "Database internals",
-        "System design",
-        "DSA",
-      ],
+      items: ["Distributed consensus", "Concurrency", "Database internals", "System design", "DSA"],
     },
   ],
 
